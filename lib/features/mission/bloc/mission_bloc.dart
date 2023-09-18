@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'package:statex/features/mission/models/mission_model.dart';
+import 'package:statex/features/mission/repos/mission_repository.dart';
 
 part 'mission_event.dart';
 part 'mission_state.dart';
@@ -18,11 +19,12 @@ class MissionBloc extends Bloc<MissionEvent, MissionState> {
   FutureOr<void> missionInitialFetchEvent(MissionInitialFetchEvent event, Emitter<MissionState> emit) async {
     try {
       emit(MissionFetchLoadingState());
-      var res = await http.get(Uri.parse("https://api.spacexdata.com/v4/launches/latest"));
-      var decodedRes = jsonDecode(res.body);
-      log("API RESPONSE JSON =>>> \n $decodedRes");
-      MissionModel mission = MissionModel.fromJson(decodedRes);
-      emit(MissionFetchSuccessfullState(mission: mission));
+      MissionModel? mission = await MissionRepository.fetchMission();
+      if(mission != null){
+        emit(MissionFetchSuccessfullState(mission: mission));
+      } else {
+        emit(MissionFetchErrorState(error: "error"));
+      }
     } catch (e) {
       log("error ==>> ${e.toString()}");
       emit(MissionFetchErrorState(error: e.toString()));
