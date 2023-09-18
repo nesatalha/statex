@@ -3,7 +3,10 @@ part of 'mission_bloc.dart';
 @immutable
 abstract class MissionState {}
 
+abstract class MissionActionState extends MissionState{}
+
 class MissionInitial extends MissionState {}
+
 
 class MissionFetchSuccessfullState extends MissionState {
   final MissionModel mission;

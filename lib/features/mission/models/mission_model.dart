@@ -14,7 +14,7 @@ class MissionModel {
   factory MissionModel.fromJson(Map<String,dynamic> json) {
     return MissionModel(
       name: json["name"],
-      patch: json["patch"]["large"],
+      patch: json["links"]["patch"]["large"],
       flightNumber: json["flight_number"],
     );
   }
